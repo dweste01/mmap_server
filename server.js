@@ -26,16 +26,15 @@ app.post('/sendLocation', function(request, response) {
 				"login": login,
 				"lat" : lat,
 				"lng" : lng,
-				"created_at" : date;
+				"created_at" : date
 			};
 			if ((toInsert.login == undefined) ||
 				(toInsert.lat == undefined) ||
 				(toInsert.lng == undefined)) {	
-					//response.json({"error":"Whoops, something is wrong with your data!"});
 					response.status(500).send({"error":"Whoops, something is wrong with your data!"});
 				}
 			else {
-				db.locations.find("login": login).toArray(function (err, arr){
+				db.locations.find({"login": login}).toArray(function (err, arr){
 					if (arr.length == 0) {
 						coll.insert(toInsert);
 						response.status(200).send(JSON.stringify(db.locations.find()));
@@ -54,7 +53,6 @@ app.post('/sendLocation', function(request, response) {
 
 
 
-// not /location.json ???
 app.get('/', function(request, response) {
 	response.set('Content-Type', 'text/html');
 	var indexPage = '';
@@ -62,18 +60,22 @@ app.get('/', function(request, response) {
 		collection.find().toArray(function(err, cursor) {
 			if (!err) {
 				JSON.stringify(locations);
-				indexPage += "<!DOCTYPE HTML><html><head><title>Where are they now?</title></head><body><h1>Messers Moony, Wormtail, Padfoor, and Prongs,
-												Purveyors of Aids to Magical Mischief-Makers, are proud to present: The Marauder's Map </h1>";
+				indexPage += "<!DOCTYPE HTML><html><head><title>Where are they now?"
+				+ "</title></head><body><h1>Messers Moony, Wormtail, Padfoor, "
+				+ "and Prongs, Purveyors of Aids to Magical Mischief-Makers, "
+				+ "are proud to present: The Marauder's Map </h1>";
 				for (var count = 0; count < cursor.length; count++) {
-					//indexPage += "<p>You fed me " + cursor[count].fooditem + "!</p>";
 					indexPage += "<p>" + cursor[count].login + " checked in at " + cursor[count].lat + ", " + cursor[count].lng
 								+ " on " + cursor[count].created_at + "<p>";
 				}
 				indexPage += "</body></html>"
 				response.send(indexPage);
 			} else {
-				response.send("<!DOCTYPE HTML><html><head><title>Where are they now?</title></head><body><h1>Messers Moony, Wormtail, Padfoor, and Prongs,
-												Purveyors of Aids to Magical Mischief-Makers, regret to inform you that something has gone wrong! </h1>");
+				response.send("<!DOCTYPE HTML><html><head><title>Where are they "
+							+ "now?</title></head><body><h1>Messers Moony, Wormtail, "
+							+ "Padfoor, and Prongs, Purveyors of Aids to Magical "
+							+ "Mischief-Makers, regret to inform you that something "
+							+ "has gone wrong! </h1>");
 			}
 		});
 	});

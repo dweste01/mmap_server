@@ -15,5 +15,13 @@
     "start": "node server.js"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dweste01/mmap_server.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dweste01/mmap_server/issues"
+  },
+  "homepage": "https://github.com/dweste01/mmap_server"
 }
