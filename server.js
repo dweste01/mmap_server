@@ -15,6 +15,12 @@ var db = MongoClient.connect(mongoUri, function(error, databaseConnection) {
 	db = databaseConnection;
 });
 
+// function getCORS(method, url) {
+// 	var xhr = new XMLHttpRequest();
+// 	xhr.open("get", "mongodb://localhost/test")
+// }
+
+// post API
 app.post('/sendLocation', function(request, response) {
 	db.collection('locations', function (err, coll) {
 		coll.find().forEach(function(request, response) {
@@ -49,38 +55,53 @@ app.post('/sendLocation', function(request, response) {
 	});
 });
 
+/*
+// get API
+app.get('/location.json', function (request, response) {
+	
 
 
+})
+
+*/
 
 
+// home/root
 app.get('/', function(request, response) {
 	response.set('Content-Type', 'text/html');
 	var indexPage = '';
 	db.collection('locations', function(er, collection) {
-		collection.find().toArray(function(err, cursor) {
-			if (!err) {
-				JSON.stringify(locations);
-				indexPage += "<!DOCTYPE HTML><html><head><title>Where are they now?"
-				+ "</title></head><body><h1>Messers Moony, Wormtail, Padfoor, "
-				+ "and Prongs, Purveyors of Aids to Magical Mischief-Makers, "
-				+ "are proud to present: The Marauder's Map </h1>";
-				for (var count = 0; count < cursor.length; count++) {
-					indexPage += "<p>" + cursor[count].login + " checked in at " + cursor[count].lat + ", " + cursor[count].lng
-								+ " on " + cursor[count].created_at + "<p>";
+		if (!er) {
+			collection.find().toArray(function(err, cursor) {
+				if (!err) {
+					x = JSON.stringify(cursor);
+					indexPage += "<!DOCTYPE HTML><html><head><title>Where are they now?"
+								+ "</title></head><body><h1>Messers Moony, Wormtail, Padfoor, "
+								+ "and Prongs, Purveyors of Aids to Magical Mischief-Makers, "
+								+ "are proud to present: The Marauder's Map </h1>";
+					for (var count = 0; count < x.length; count++) {
+						indexPage += "<p> count is: " + count + "<p>";
+						indexPage += "<p>" + x[count].login + " checked in at "
+									+ x[count].lat + ", " + x[count].lng
+									+ " on " + x[count].created_at + "<p>";
+					}
+					indexPage += "</body></html>"
+					response.send(indexPage);
+				} else {
+					response.send("<!DOCTYPE HTML><html><head><title>Where are they "
+								+ "now?</title></head><body><h1>Messers Moony, Wormtail, "
+								+ "Padfoor, and Prongs, Purveyors of Aids to Magical "
+								+ "Mischief-Makers, regret to inform you that something "
+								+ "has gone wrong! </h1>");
 				}
-				indexPage += "</body></html>"
-				response.send(indexPage);
-			} else {
-				response.send("<!DOCTYPE HTML><html><head><title>Where are they "
-							+ "now?</title></head><body><h1>Messers Moony, Wormtail, "
-							+ "Padfoor, and Prongs, Purveyors of Aids to Magical "
-							+ "Mischief-Makers, regret to inform you that something "
-							+ "has gone wrong! </h1>");
-			}
-		});
+			});
+		}
+		else {
+			response.send(500);
+		}
 	});
 });
 
 // Oh joy! http://stackoverflow.com/questions/15693192/heroku-node-js-error-web-process-failed-to-bind-to-port-within-60-seconds-of
-app.listen(process.env.PORT || 3000);
+app.listen(process.env.PORT || 5000);
 
