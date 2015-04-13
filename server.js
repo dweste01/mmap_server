@@ -70,26 +70,26 @@ app.get('/location.json', function (request, response) {
 app.get('/', function(request, response) {
 	response.set('Content-Type', 'text/html');
 	var indexPage = '';
-	db.collection('locations', function(er, collection) {
+	db.collection('locations', function(er, coll) {
 		if (!er) {
-			collection.find().toArray(function(err, cursor) {
+			coll.find().toArray(function(err, cursor) {
 				if (!err) {
 					x = JSON.stringify(cursor);
 					indexPage += "<!DOCTYPE HTML><html><head><title>Where are they now?"
-								+ "</title></head><body><h1>Messers Moony, Wormtail, Padfoor, "
+								+ "</title></head><body><h1>Messrs Moony, Wormtail, Padfoor, "
 								+ "and Prongs, Purveyors of Aids to Magical Mischief-Makers, "
 								+ "are proud to present: The Marauder's Map </h1>";
 					for (var count = 0; count < x.length; count++) {
-						indexPage += "<p> count is: " + count + "<p>";
+						indexPage += "<p> count is: " + count + "</p>";
 						indexPage += "<p>" + x[count].login + " checked in at "
 									+ x[count].lat + ", " + x[count].lng
-									+ " on " + x[count].created_at + "<p>";
+									+ " on " + x[count].created_at + "</p>";
 					}
 					indexPage += "</body></html>"
 					response.send(indexPage);
 				} else {
 					response.send("<!DOCTYPE HTML><html><head><title>Where are they "
-								+ "now?</title></head><body><h1>Messers Moony, Wormtail, "
+								+ "now?</title></head><body><h1>Messrs Moony, Wormtail, "
 								+ "Padfoor, and Prongs, Purveyors of Aids to Magical "
 								+ "Mischief-Makers, regret to inform you that something "
 								+ "has gone wrong! </h1>");
