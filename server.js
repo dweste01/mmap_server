@@ -103,8 +103,8 @@ app.get('/', function(request, response) {
 					x = JSON.stringify(cursor);
 					indexPage += "<!DOCTYPE HTML><html><head><title>Where are they now?"
 								+ "</title></head><body><h1>Messrs Moony, Wormtail, Padfoor, "
-								+ "and Prongs, Purveyors of Aids to Magical Mischief-Makers, "
-								+ "are proud to present: The Marauder's Map </h1>";
+								+ "and Prongs, <br> Purveyors of Aids to Magical Mischief-Makers, "
+								+ "<br>are proud to present: <br> The Marauder's Map </h1>";
 					for (var count = 0; count < x.length; count++) {
 						// indexPage += "<p> count is: " + count + "</p>";
 						indexPage += "<p>" + x[count].login + " checked in at "
@@ -116,8 +116,8 @@ app.get('/', function(request, response) {
 				} else {
 					response.send("<!DOCTYPE HTML><html><head><title>Where are they "
 								+ "now?</title></head><body><h1>Messrs Moony, Wormtail, "
-								+ "Padfoor, and Prongs, Purveyors of Aids to Magical "
-								+ "Mischief-Makers, regret to inform you that something "
+								+ "Padfoor, and Prongs, <br> Purveyors of Aids to Magical "
+								+ "Mischief-Makers, <br> regret to inform you that something "
 								+ "has gone wrong! </h1>");
 				}
 			});
