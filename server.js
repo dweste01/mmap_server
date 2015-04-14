@@ -112,9 +112,9 @@ app.get('/', function(request, response) {
 									+ " on " + x[count].created_at + "</p>";
 					}
 					indexPage += "</body></html>"
-					response.send(indexPage);
+					response.status(200).send(indexPage);
 				} else {
-					response.send("<!DOCTYPE HTML><html><head><title>Where are they "
+					response.status(500).send("<!DOCTYPE HTML><html><head><title>Where are they "
 								+ "now?</title></head><body><h1>Messrs Moony, Wormtail, "
 								+ "Padfoor, and Prongs, <br> Purveyors of Aids to Magical "
 								+ "Mischief-Makers, <br> regret to inform you that something "
