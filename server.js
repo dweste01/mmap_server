@@ -1,3 +1,9 @@
+// Danielle Westerman
+// COMP20 Assigment 3
+// Marauder's Map server
+// 4/15/15
+
+
 // Initialization
 var express = require('express');
 var bodyParser = require('body-parser');
@@ -22,7 +28,9 @@ var db = MongoClient.connect(mongoUri, function(error, databaseConnection) {
 
 // post API
 app.post('/sendLocation', function(request, response) {
-	db.collection('locations', function (err, coll) {
+	response.header("Access-Control-Allow-Origin: *");
+	response.header("Access-Control-Allow-Headers: X-Requested-With");
+	db.collection('locations', function(err, coll) {
 		coll.find().forEach(function(request, response) {
 			var login = request.body.login;
 			var lat = request.body.lat;
@@ -40,7 +48,7 @@ app.post('/sendLocation', function(request, response) {
 					response.status(500).send({"error":"Whoops, something is wrong with your data!"});
 				}
 			else {
-				db.locations.find({"login": login}).toArray(function (err, arr){
+				db.locations.find({"login": login}).toArray(function(err, arr){
 					if (arr.length == 0) {
 						coll.insert(toInsert);
 						response.status(200).send(JSON.stringify(db.locations.find()));
@@ -55,15 +63,33 @@ app.post('/sendLocation', function(request, response) {
 	});
 });
 
-/*
+
 // get API
-app.get('/location.json', function (request, response) {
-	
+app.get('/location.json', function(request, response) {
+	response.header("Access-Control-Allow-Origin: *");
+	response.header("Access-Control-Allow-Headers: X-Requested-With");
+	db.collection('locations', function(err, coll) {
+		if (!err) {
+			// coll is the collection
+			coll.find({'login': request.query.login}).toArray(function(err, cursor){
+				if (!err) {
+					if (cursor.length == 0) {
+						response.status(200).send({});
+					}
+					else {
+						response.status(200).send(JSON.stringify(coll.find({'login': request.query.login})));
+					}
+				}
+			});
+		}
+		else {
+			response.status(500).send();
+		}
+
+	});
+});
 
 
-})
-
-*/
 
 
 // home/root
@@ -80,7 +106,7 @@ app.get('/', function(request, response) {
 								+ "and Prongs, Purveyors of Aids to Magical Mischief-Makers, "
 								+ "are proud to present: The Marauder's Map </h1>";
 					for (var count = 0; count < x.length; count++) {
-						indexPage += "<p> count is: " + count + "</p>";
+						// indexPage += "<p> count is: " + count + "</p>";
 						indexPage += "<p>" + x[count].login + " checked in at "
 									+ x[count].lat + ", " + x[count].lng
 									+ " on " + x[count].created_at + "</p>";
