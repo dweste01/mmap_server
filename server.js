@@ -80,6 +80,8 @@ app.get('/location.json', function(request, response) {
 
 // home/root
 app.get('/', function(request, response) {
+	response.header("Access-Control-Allow-Origin: *");
+	response.header("Access-Control-Allow-Headers: X-Requested-With");
 	response.set('Content-Type', 'text/html');
 	var indexPage = '';
 	db.collection('locations', function(er, coll) {
