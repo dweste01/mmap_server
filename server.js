@@ -41,7 +41,6 @@ app.post('/sendLocation', function(request, response) {
 				}
 			else {
 					coll.update({"login": toInsert.login}, toInsert, {upsert: true});
-					// console.log("ARR.LENGTH: " + arr.length);
 					response.send(JSON.stringify(coll));
 			}
 		}
@@ -64,7 +63,7 @@ app.get('/location.json', function(request, response) {
 						response.send({});
 					}
 					else {
-						response.send(JSON.stringify(coll.find({'login': request.query.login})));
+						response.send(JSON.stringify(cursor));
 					}
 				}
 			});
