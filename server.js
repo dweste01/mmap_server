@@ -40,8 +40,10 @@ app.post('/sendLocation', function(request, response) {
 					response.status(400).send({"error":"Whoops, something is wrong with your data!"});
 				}
 			else {
-					coll.update({"login": toInsert.login}, toInsert, {upsert: true});
-					response.send(JSON.stringify(coll));
+					coll.update({"login": toInsert.login}, toInsert, {upsert: true}, function(error, result) {
+						response.send("[]");
+						// You are missing something here...						
+					});
 			}
 		}
 		else {
