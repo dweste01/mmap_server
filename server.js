@@ -21,45 +21,33 @@ var db = MongoClient.connect(mongoUri, function(error, databaseConnection) {
 	db = databaseConnection;
 });
 
-// function getCORS(method, url) {
-// 	var xhr = new XMLHttpRequest();
-// 	xhr.open("get", "mongodb://localhost/test")
-// }
-
 // post API
 app.post('/sendLocation', function(request, response) {
 	response.header("Access-Control-Allow-Origin: *");
 	response.header("Access-Control-Allow-Headers: X-Requested-With");
 	db.collection('locations', function(err, coll) {
-		coll.find().forEach(function(request, response) {
-			var login = request.body.login;
-			var lat = request.body.lat;
-			var lng = request.body.lng;
-			var date = Date.now();
+		if (!err) {
 			var toInsert = {
-				"login": login,
-				"lat" : lat,
-				"lng" : lng,
-				"created_at" : date
+				"login": request.body.login,
+				"lat" : request.body.lat,
+				"lng" : request.body.lng,
+				"created_at" : Date.now()
 			};
+			// console.log(toInsert);
 			if ((toInsert.login == undefined) ||
 				(toInsert.lat == undefined) ||
 				(toInsert.lng == undefined)) {	
-					response.status(500).send({"error":"Whoops, something is wrong with your data!"});
+					response.status(400).send({"error":"Whoops, something is wrong with your data!"});
 				}
 			else {
-				db.locations.find({"login": login}).toArray(function(err, arr){
-					if (arr.length == 0) {
-						coll.insert(toInsert);
-						response.status(200).send(JSON.stringify(db.locations.find()));
-					}
-					else {
-						coll.update({"login": login}, {"lat": lat, "lng": lng, "created_at": date});
-						response.status(200).send(JSON.stringify(db.locations.find()));
-					}
-				});
+					coll.update({"login": toInsert.login}, toInsert, {upsert: true});
+					console.log("ARR.LENGTH: " + arr.length);
+					response.send(JSON.stringify(arr));
 			}
-		});
+		}
+		else {
+			response.status(500).send();
+		}
 	});
 });
 
@@ -70,14 +58,13 @@ app.get('/location.json', function(request, response) {
 	response.header("Access-Control-Allow-Headers: X-Requested-With");
 	db.collection('locations', function(err, coll) {
 		if (!err) {
-			// coll is the collection
 			coll.find({'login': request.query.login}).toArray(function(err, cursor){
 				if (!err) {
 					if (cursor.length == 0) {
-						response.status(200).send({});
+						response.send({});
 					}
 					else {
-						response.status(200).send(JSON.stringify(coll.find({'login': request.query.login})));
+						response.send(JSON.stringify(coll.find({'login': request.query.login})));
 					}
 				}
 			});
@@ -100,19 +87,19 @@ app.get('/', function(request, response) {
 		if (!er) {
 			coll.find().toArray(function(err, cursor) {
 				if (!err) {
-					x = JSON.stringify(cursor);
+					var x = JSON.stringify(cursor);
 					indexPage += "<!DOCTYPE HTML><html><head><title>Where are they now?"
 								+ "</title></head><body><h1>Messrs Moony, Wormtail, Padfoor, "
 								+ "and Prongs, <br> Purveyors of Aids to Magical Mischief-Makers, "
-								+ "<br>are proud to present: <br> The Marauder's Map </h1>";
-					for (var count = 0; count < x.length; count++) {
-						// indexPage += "<p> count is: " + count + "</p>";
-						indexPage += "<p>" + x[count].login + " checked in at "
-									+ x[count].lat + ", " + x[count].lng
-									+ " on " + x[count].created_at + "</p>";
-					}
+								+ "<br>are proud to present: <br><i> The Marauder's Map </i></h1>";
+					cursor.forEach(function(rec){
+						indexPage += "<p>" + rec.login + " checked in at "
+									+ rec.lat + ", " + rec.lng
+									+ " on " + rec.created_at + "</p>";
+
+					})
 					indexPage += "</body></html>"
-					response.status(200).send(indexPage);
+					response.send(indexPage);
 				} else {
 					response.status(500).send("<!DOCTYPE HTML><html><head><title>Where are they "
 								+ "now?</title></head><body><h1>Messrs Moony, Wormtail, "
