@@ -29,8 +29,8 @@ app.post('/sendLocation', function(request, response) {
 		if (!err) {
 			var toInsert = {
 				"login": request.body.login,
-				"lat" : request.body.lat,
-				"lng" : request.body.lng,
+				"lat" : parseFloat(request.body.lat),
+				"lng" : parseFloat(request.body.lng),
 				"created_at" : Date.now()
 			};
 			// console.log(toInsert);
@@ -41,8 +41,8 @@ app.post('/sendLocation', function(request, response) {
 				}
 			else {
 					coll.update({"login": toInsert.login}, toInsert, {upsert: true});
-					console.log("ARR.LENGTH: " + arr.length);
-					response.send(JSON.stringify(arr));
+					// console.log("ARR.LENGTH: " + arr.length);
+					response.send(JSON.stringify(coll));
 			}
 		}
 		else {
