@@ -54,7 +54,7 @@ app.post('/sendLocation', function(request, response) {
 // get API
 app.get('/location.json', function(request, response) {
 	response.header("Access-Control-Allow-Origin: *");
-	// response.header("Access-Control-Allow-Headers: X-Requested-With");
+	response.header("Access-Control-Allow-Headers: X-Requested-With");
 	db.collection('locations', function(err, coll) {
 		if (!err) {
 			coll.find({'login': request.query.login}).toArray(function(err, cursor){
